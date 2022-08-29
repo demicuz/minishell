@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:33:07 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/29 13:58:08 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/29 14:13:47 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,41 +144,42 @@ bool	parse_and_save_cmd_elem(t_scanner *sc, t_cmd *cmd)
 
 // cmd = word | redirect {word | redirect}
 // (yes, "> wat" is a valid command in Bash)
-t_cmd	*parse_command(t_scanner *sc)
+t_list	*parse_command(t_scanner *sc)
 {
 	t_cmd	*cmd;
+	t_list	*lst_elem;
 
 	cmd = ft_calloc(1, sizeof(*cmd));
-	if (!cmd)
+	lst_elem = ft_lstnew(cmd);
+	if (!cmd || !lst_elem)
 		fail("Out of memory!");
+	lst_elem->data = cmd;
 	if (!parse_and_save_cmd_elem(sc, cmd))
 	{
 		free_cmd_data(cmd);
+		free(lst_elem); // TODO ugly
 		return (NULL);
 	}
 	while (sc->token->type == T_WORD || is_redirect(sc->token->type)) {
 		if (!parse_and_save_cmd_elem(sc, cmd))
 		{
 			free_cmd_data(cmd);
+			free(lst_elem); // TODO ugly
 			return (NULL);
 		}
 	}
-	return (cmd);
+	return (lst_elem);
 }
 
 // pipeline = cmd {"|" cmd}
 t_list	*parse_pipeline(t_scanner *sc)
 {
-	t_cmd	*parsed_cmd;
-	t_list	*cmd_list;
 	t_list	*pipeline;
+	t_list	*parsed_cmd;
 
-	parsed_cmd = parse_command(sc);
-	if (!parsed_cmd)
-		return (NULL);
-	pipeline = ft_lstnew(parsed_cmd);
+	pipeline = parse_command(sc);
 	if (!pipeline)
-		fail("Out of memory!");
+		return (NULL);
 
 	while (sc->token->type == T_PIPE)
 	{
@@ -189,10 +190,7 @@ t_list	*parse_pipeline(t_scanner *sc)
 			ft_lstclear(&pipeline, free_cmd_data);
 			return (NULL);
 		}
-		cmd_list = ft_lstnew(parsed_cmd);
-		if (!cmd_list)
-			fail("Out of memory!");
-		ft_lstadd_back(&pipeline, cmd_list);
+		ft_lstadd_back(&pipeline, parsed_cmd);
 	}
 	return (pipeline);
 }

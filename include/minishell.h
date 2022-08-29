@@ -113,7 +113,7 @@ typedef enum e_parse_error
 
 // parser
 t_list		*parse(char *expr);
-t_cmd		*parse_command(t_scanner *sc);
+t_list		*parse_command(t_scanner *sc);
 t_list		*parse_pipeline(t_scanner *sc);
 t_list		*parse_expr(t_scanner *sc);
 
