@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/29 14:59:34 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 16:58:49 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/30 20:28:49 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ bool		in(const char *s, char c);
 t_list		*set_token_type(t_list *lst_token, t_token_type type);
 void		*clear_data_and_abort(t_list **lst_to_clear);
 void		fail(const char *message);
+bool		perror_and_false(const char *exec_name);
+
 bool		strequal(const char *s1, const char *s2);
 void		free_redirect_data(void *redirect);
 void		free_cmd_data(void *cmd);
@@ -95,6 +97,6 @@ char		**lst_to_string_array(t_list *lst);
 void		print_string_array(const char *arr[]);
 
 // executer
-int			exec_pipeline(t_list *pipeline, t_state *state);
+bool		exec_pipeline(t_list *pipeline, t_state *state);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:31:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 19:23:18 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/30 23:46:21 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	main(int argc, const char *argv[])
 	state.envp = environ;
 
 	// TODO if non-tty, run with get-next-line
-
 	line = readline(PROMPT);
 	while (line != NULL)
 	{
@@ -83,7 +82,6 @@ int	main(int argc, const char *argv[])
 		// printf("[%s]\n", line);
 		t_list *pipeline = parse(line);
 		print_pipeline(pipeline);
-
 		exec_pipeline(pipeline, &state);
 
 		free(line);

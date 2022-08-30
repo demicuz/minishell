@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 08:52:25 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 19:21:18 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/30 21:01:53 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@ void	fail(const char *message)
 {
 	ft_putstr_fd(message, STDERR_FILENO);
 	exit(EXIT_FAILURE);
+}
+
+bool	perror_and_false(const char *exec_name)
+{
+	perror(exec_name);
+	return (false);
 }
 
 bool	strequal(const char *s1, const char *s2)

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:33:07 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/29 20:21:26 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 00:13:17 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_list	*parse(char *expr)
 
 	if (is_help(expr))
 	{
-		printf(HELP); // TODO
+		printf(HELP); // TODO should be a builtin
 		return (NULL);
 	}
 	sc = init_scanner(expr);
