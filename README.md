@@ -6,8 +6,11 @@ A project for School 21. Implements a small subset of Bash.
 
 ### To-do
 - [x] Command execution
+- [x] Pipes
 - [ ] Find commands in `PATH`
 - [ ] Relative paths
+- [ ] Redirects
+- [ ] Heredocs
 - [ ] Signals (`ctrl + C`, `ctrl + D`, `ctrl + /`). `ctrl + D` seems to be working out of the box in `readline`.
 - [ ] Expanding variables inside of double quotes
 - [ ] Builtins
