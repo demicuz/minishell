@@ -1,0 +1,14 @@
+minishell
+
+*.o
+*.d
+*.out
+*.a
+*.json
+*.txt
+*.sh
+
+.cache/
+.clang-tidy
+*.sublime-workspace
+*.sublime-project
