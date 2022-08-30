@@ -30,7 +30,7 @@ $(LIBFT): $(LIB_DIR)
 $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(LDFLAGS) $(OBJ) $(LDLIBS) -o $(NAME)
 
-# Turns out you don't have to have a rule for object files. Make uses CFLAGS
+# Turns out you don't have to have a rule for object files. 'Make' uses CFLAGS
 # and CPPFLAGS variables to compile .o files.
 # %.o: %.c
 # 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
