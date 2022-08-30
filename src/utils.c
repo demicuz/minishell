@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 08:52:25 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 21:01:53 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 02:34:23 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,6 @@ void	*clear_data_and_abort(t_list **lst_to_clear)
 {
 	ft_lstclear(lst_to_clear, free);
 	return (NULL);
-}
-
-void	fail(const char *message)
-{
-	ft_putstr_fd(message, STDERR_FILENO);
-	exit(EXIT_FAILURE);
-}
-
-bool	perror_and_false(const char *exec_name)
-{
-	perror(exec_name);
-	return (false);
 }
 
 bool	strequal(const char *s1, const char *s2)
@@ -108,6 +96,43 @@ char	**lst_to_string_array(t_list *lst)
 	}
 	*p = NULL;
 	return (arr);
+}
+
+char	*my_getenv(char *envp[], char *var)
+{
+	while (envp)
+	{
+		if (ft_starts_with(var, *envp) && (*envp)[ft_strlen(var)] == '=')
+			return (*envp + ft_strlen(var) + 1);
+		envp++;
+	}
+	return (NULL);
+}
+
+char	**copy_string_arr(char *arr[])
+{
+	size_t	size;
+	size_t	i;
+	char	**copy;
+
+	if (!arr)
+		return (NULL);
+	size = 0;
+	while (arr[size])
+		size++;
+	copy = malloc((size + 1) * sizeof(char *));
+	if (!copy)
+		fail("Out of memory!");
+	i = 0;
+	while (arr[i])
+	{
+		copy[i] = ft_strdup(arr[i]);
+		if (!copy[i])
+			fail("Out of memory!");
+		i++;
+	}
+	copy[i] = NULL;
+	return (copy);
 }
 
 // TODO remove this

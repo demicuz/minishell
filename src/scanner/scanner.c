@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:33:15 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/29 13:54:07 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 01:45:45 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	scan_next_token(t_scanner *sc)
 	{
 		token->value = ft_substr_between(start, sc->cursor);
 		if (!token->value)
-			fail("Out of memory");
+			fail("Out of memory!");
 	}
 	skip_spaces(sc);
 }

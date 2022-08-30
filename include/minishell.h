@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/29 14:59:34 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 20:28:49 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 02:00:40 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <libft.h>
 
 // TODO move these to minishell_constants.h maybe?
+# define SHELL_NAME "bear shell"
 # define PROMPT "ʕ•ᴥ•ʔ ➜ "
 # define THROW_TABLE "ʕノ•ᴥ•ʔノ ︵ ┻━┻ "
 
@@ -85,18 +86,23 @@ void		scan_next_token(t_scanner *sc);
 bool		in(const char *s, char c);
 t_list		*set_token_type(t_list *lst_token, t_token_type type);
 void		*clear_data_and_abort(t_list **lst_to_clear);
-void		fail(const char *message);
-bool		perror_and_false(const char *exec_name);
 
 bool		strequal(const char *s1, const char *s2);
 void		free_redirect_data(void *redirect);
 void		free_cmd_data(void *cmd);
 bool		is_help(const char *expr);
 char		**lst_to_string_array(t_list *lst);
+char		*my_getenv(char *envp[], char *var);
+char		**copy_string_arr(char *arr[]);
 
 void		print_string_array(const char *arr[]);
 
 // executer
 bool		exec_pipeline(t_list *pipeline, t_state *state);
+
+// errors
+void		fail(const char *msg);
+void		epic_fail(const char *shell, const char *exec_name, const char *msg);
+bool		perror_and_false(const char *exec_name);
 
 #endif

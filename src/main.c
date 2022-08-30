@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:31:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/30 23:46:21 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 02:39:15 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <libft.h>
 #include <minishell.h>
 
-// TODO remove this
+// TODO remove this?
 #include <unistd.h>
 
 // According to POSIX, this is the way you should access environment variables:
@@ -31,9 +31,8 @@ void	print_pipeline(t_list *lst)
 	while (lst)
 	{
 		t_cmd *cmd = lst->data;
-
 		if (cmd->args)
-			printf("args:");
+			printf("cmd:");
 		t_list *args = cmd->args;
 		while (args)
 		{
@@ -44,34 +43,26 @@ void	print_pipeline(t_list *lst)
 			printf("\n");
 
 		if (cmd->redirects)
-			printf("redirects: ");
+			printf("redirects:\n");
 		t_list *redirects = cmd->redirects;
 		while (redirects)
 		{
 			t_redirect *r = redirects->data;
-			printf("type: %s, value: %s, ", redir_types[r->type - 2], (char *) r->name);
+			printf("    type: %s, value: %s\n", redir_types[r->type - 2], (char *) r->name);
 			redirects = redirects->next;
 		}
 		if (cmd->redirects)
 			printf("\n");
 		lst = lst->next;
 	}
-	printf("\n");
 }
 
 int	main(int argc, const char *argv[])
 {
-	// char *line = "   Hello 123 \"abc\"  | ec\"ho wo\"rld  ";
-	// t_list	*pipeline;
-	// pipeline = parse(line);
-	// printf("Line to parse: [%s]\n", line);
-	// print_pipeline(pipeline);
-
 	char	*line;
 	t_state	state;
-	// TODO:
-	// state.envp = copy_environ(environ);
-	state.envp = environ;
+
+	state.envp = copy_string_arr(environ);
 
 	// TODO if non-tty, run with get-next-line
 	line = readline(PROMPT);
@@ -79,16 +70,16 @@ int	main(int argc, const char *argv[])
 	{
 		if (strlen(line) > 0)
 			add_history(line);
-		// printf("[%s]\n", line);
+
 		t_list *pipeline = parse(line);
+		#ifdef DEBUG_PIPELINE
 		print_pipeline(pipeline);
+		#endif
 		exec_pipeline(pipeline, &state);
 
 		free(line);
 		ft_lstclear(&pipeline, free_cmd_data);
-		// puts("rl_line_buffer:");
-		// puts(rl_line_buffer);
 		line = readline(PROMPT);
 	}
-	return (0);
+	exit(EXIT_SUCCESS);
 }

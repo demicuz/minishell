@@ -6,15 +6,17 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/29 15:02:07 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/31 00:07:40 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/31 01:47:31 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 #include <stdio.h> // TODO remove this
+#include <string.h>
 #include <unistd.h>
 #include <wait.h>
 
+// Don't even try to understand this
 char	*construct_pathname(char *PATH, char *exec_name)
 {
 	char	*path_end;
@@ -34,9 +36,8 @@ char	*construct_pathname(char *PATH, char *exec_name)
 	return (pathname);
 }
 
-// note: directory with a colon in the name cannot be added to the path
-// (because POSIX)
-// TODO horrible, horrible code
+// E.g.: `exec_name` is "echo", then return "/usr/bin/echo". NULL of not found.
+// Note: directory with a colon in the name cannot be added to PATH (bc POSIX)
 char	*get_pathname(char *PATH, char *exec_name)
 {
 	char	*pathname;
@@ -67,12 +68,19 @@ void	close_pipe(int p[])
 
 void	exec_cmd(t_cmd *cmd, t_state *state, int l_pipe[], int r_pipe[])
 {
-	// TODO char *pathname = find_pathname(state);
-	// TODO redirects, heredocs, double quotes expansion
+	// TODO redirects, heredocs, double quotes expansion, process them FIRST!
 	char	*pathname;
-	// TODO don't search if command name starts with a `/`
-	// TODO use state.envp
-	pathname = get_pathname(getenv("PATH"), cmd->args[0].data);
+	char	*exec_name;
+
+	exec_name = cmd->args[0].data;
+	if (!exec_name)
+		exit(EXIT_SUCCESS);
+	else if (exec_name[0] == '/')
+		pathname = exec_name;
+	else
+		pathname = get_pathname(my_getenv(state->envp, "PATH"), exec_name);
+	if (!pathname)
+		epic_fail(SHELL_NAME, exec_name, "command not found...");
 
 	if (l_pipe[0] != -1)
 		dup2(l_pipe[0], STDIN_FILENO);
