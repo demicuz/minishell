@@ -6,12 +6,13 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 08:52:25 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/28 16:19:17 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/30 19:21:18 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <minishell.h>
 
@@ -29,33 +30,16 @@ bool	in(const char *s, char c)
 	return (false);
 }
 
-// t_list	*set_token_type(t_list *lst_token, t_token_type type)
-// {
-// 	t_token	*token;
-
-// 	token = lst_token->data;
-// 	token->type = type;
-// 	return (lst_token);
-// }
-
+// TODO maybe not needed?
 void	*clear_data_and_abort(t_list **lst_to_clear)
 {
 	ft_lstclear(lst_to_clear, free);
 	return (NULL);
 }
 
-void	parse_error(t_parse_error error, t_token *token)
-{
-	if (error == ERR_T)
-		printf("syntax error: unexpected end of file\n");
-	else if (error == ERR_EOF)
-		printf("syntax error near unexpected token '%s'\n", token->value);
-	// TODO cleanup?
-}
-
 void	fail(const char *message)
 {
-	printf("%s", message);
+	ft_putstr_fd(message, STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
 
@@ -80,18 +64,54 @@ void	free_cmd_data(void *cmd)
 	t_cmd	*c;
 
 	c = cmd;
-	free(c->name);
+	// free(c->name);
 	ft_lstclear(&c->args, free);
 	ft_lstclear(&c->redirects, free_redirect_data);
 	free(c);
 }
 
 // Just trim 'expr' and compare it to "help". Don't want to use ft_strtrim,
-// because it uses malloc. Don't need that really.
+// because it uses malloc.
 bool	is_help(const char *expr)
 {
 	while (in(SPACE_CHARS, *expr))
 		expr++;
 	return (ft_starts_with("help", expr) && (expr[4] == '\0' ||
 		in(SPACE_CHARS, expr[4])));
+}
+
+// TODO move to executer-related stuff maybe?
+char	**lst_to_string_array(t_list *lst)
+{
+	char	**arr;
+	char	**p;
+
+	arr = malloc(sizeof(*arr) * (ft_lstsize(lst) + 1));
+	// TODO correct error handling, maybe don't exit (if in parent process)?
+	if (!arr)
+	{
+		perror("lst_to_string_array");
+		exit(EXIT_FAILURE);
+	}
+	p = arr;
+	while (lst)
+	{
+		*p = lst->data;
+		lst = lst->next;
+		p++;
+	}
+	*p = NULL;
+	return (arr);
+}
+
+// TODO remove this
+void	print_string_array(const char *arr[])
+{
+	if (!arr)
+		return ;
+	while (*arr)
+	{
+		printf("%s\n", *arr);
+		arr++;
+	}
 }

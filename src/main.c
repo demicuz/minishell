@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:31:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/29 13:48:38 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/30 19:23:18 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,17 @@
 // TODO remove this
 #include <unistd.h>
 
-void	print_argv(int argc, const char *argv[])
-{
-	while (argc)
-	{
-		printf("%s\n", *argv);
-		argv++;
-		argc--;
-	}
-}
+// According to POSIX, this is the way you should access environment variables:
+extern char **environ;
 
 void	print_pipeline(t_list *lst)
 {
+	char *redir_types[] = {"T_REDIR_OUT", "T_REDIR_OUT_APPEND", "T_REDIR_IN", "T_HEREDOC"};
+
 	while (lst)
 	{
 		t_cmd *cmd = lst->data;
-		printf("\nname: %s\n", cmd->name);
+
 		if (cmd->args)
 			printf("args:");
 		t_list *args = cmd->args;
@@ -54,7 +49,7 @@ void	print_pipeline(t_list *lst)
 		while (redirects)
 		{
 			t_redirect *r = redirects->data;
-			printf("type: %d, value: %s, ", r->type, (char *) r->name);
+			printf("type: %s, value: %s, ", redir_types[r->type - 2], (char *) r->name);
 			redirects = redirects->next;
 		}
 		if (cmd->redirects)
@@ -73,6 +68,12 @@ int	main(int argc, const char *argv[])
 	// print_pipeline(pipeline);
 
 	char	*line;
+	t_state	state;
+	// TODO:
+	// state.envp = copy_environ(environ);
+	state.envp = environ;
+
+	// TODO if non-tty, run with get-next-line
 
 	line = readline(PROMPT);
 	while (line != NULL)
@@ -82,6 +83,9 @@ int	main(int argc, const char *argv[])
 		// printf("[%s]\n", line);
 		t_list *pipeline = parse(line);
 		print_pipeline(pipeline);
+
+		exec_pipeline(pipeline, &state);
+
 		free(line);
 		ft_lstclear(&pipeline, free_cmd_data);
 		// puts("rl_line_buffer:");

@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:33:07 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/29 14:13:47 by psharen          ###   ########.fr       */
+/*   Updated: 2022/08/29 20:21:26 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 // THIS IS NOT HOW YOU SHOULD WRITE PARSERS!
 
-// Grammar in eBNF:
+// Grammar in eBNF notation:
 // pipeline = cmd {"|" cmd}
 // cmd      = word | redirect {word | redirect}
 // redirect = (">" | "<" | ">>" | "<<") word
@@ -81,17 +81,17 @@ bool parse_and_save_cmd_arg(t_scanner *sc, t_cmd *cmd)
 
 	if (!expect(sc->token, T_WORD))
 		return (false);
-	if (!cmd->name)
-		cmd->name = sc->token->value;
-	else
-	{
+	// if (!cmd->name)
+		// cmd->name = sc->token->value;
+	// else
+	// {
 		// TODO maybe make a wrapper for these three lines? This pattern is
 		// very common
-		lst_elem = ft_lstnew(sc->token->value);
-		if (!lst_elem)
-			fail("Out of memory!");
-		ft_lstadd_back(&cmd->args, lst_elem); // TODO O(n^2)
-	}
+	lst_elem = ft_lstnew(sc->token->value);
+	if (!lst_elem)
+		fail("Out of memory!");
+	ft_lstadd_back(&cmd->args, lst_elem); // TODO O(n^2)
+	// }
 	scan_next_token(sc);
 	return (true);
 }
@@ -195,6 +195,7 @@ t_list	*parse_pipeline(t_scanner *sc)
 	return (pipeline);
 }
 
+// TODO maybe move this stuff to parse()?
 t_list	*parse_expr(t_scanner *sc)
 {
 	t_list	*pipeline;
