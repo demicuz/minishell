@@ -7,7 +7,7 @@ A project for School 21. Implements a small subset of Bash.
 ### To-do
 - [x] Command execution
 - [x] Pipes
-- [ ] Find commands in `PATH`
+- [x] Find commands in `PATH`
 - [ ] Relative paths
 - [ ] Redirects
 - [ ] Heredocs
@@ -18,5 +18,5 @@ A project for School 21. Implements a small subset of Bash.
 - [ ] Non-tty mode (`echo "ls" | ./minishell` should run `ls` inside of `minishell`)
 
 **misc**
-- [ ] Use STDERR for errors. We can't use `fprintf`, that sucks.
+- [x] Use STDERR for errors. We can't use `fprintf`, that sucks.
 - [ ] Correct error handling in general
