@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 11:44:58 by psharen           #+#    #+#             */
-/*   Updated: 2022/09/01 12:58:31 by psharen          ###   ########.fr       */
+/*   Updated: 2022/09/02 00:20:08 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ bool	process_redirects(t_cmd *cmd)
 		redir = cmd->redirects->data;
 		if (redir->type == T_REDIR_IN)
 		{
+			// If we had heredoc previously, close its pipe read end. There's
+			// probably a better way to manage this, but here we are.
+			my_close(&heredoc[0]);
 			fd = my_open(redir->name, O_RDONLY, 0);
 			if (fd == -1)
 				return (false);
