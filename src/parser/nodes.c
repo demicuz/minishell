@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 12:00:54 by psharen           #+#    #+#             */
-/*   Updated: 2022/09/01 13:02:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/09/01 18:14:06 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,20 @@
 #include <libft.h>
 #include <minishell.h>
 
-// Parses and writes arguments to cmd->args. The first argument is command name.
-static bool parse_and_save_arg(t_scanner *sc, t_cmd *cmd)
+static t_list *parse_arg(t_scanner *sc)
 {
-	t_list	*lst_elem;
+	t_list			*elem;
 
 	if (!expect(sc->token, T_WORD))
-		return (false);
-	lst_elem = ft_lstnew(sc->token->value);
-	if (!lst_elem)
+		return (NULL);
+	elem = ft_lstnew(sc->token->value);
+	if (!elem)
 		fail("Out of memory!");
-	ft_lstadd_back(&cmd->args, lst_elem); // TODO O(n^2)
 	scan_next_token(sc);
-	return (true);
+	return (elem);
 }
 
 // redirect = (">" | "<" | ">>" | "<<") word
-// Adds redirects to cmd->redirects. Each redirect is of type t_redirect.
 static t_list	*parse_redirect(t_scanner *sc)
 {
 	t_redirect	*redir;
@@ -55,22 +52,42 @@ static t_list	*parse_redirect(t_scanner *sc)
 	return (lst_elem);
 }
 
-// Parse and save either a word, or a redirect.
-static bool	parse_and_save_cmd_part(t_scanner *sc, t_cmd *cmd)
+// ft_lstadd_back without O(n^2) and twice the code complexity.
+static void	epic_lstadd_back(t_list *elem, t_list **last_elem, t_list **lst)
 {
-	t_list	*current_redir;
-
-	if (sc->token->type == T_WORD)
+	if (!*lst)
 	{
-		if (!parse_and_save_arg(sc, cmd))
-			return (false);
+		*lst = elem;
+		*last_elem = elem;
 	}
 	else
 	{
-		current_redir = parse_redirect(sc);
-		if (!current_redir)
+		(*last_elem)->next = elem;
+		*last_elem = elem;
+	}
+}
+
+// Parse and save either a word, or a redirect.
+static bool	parse_and_save_cmd_part(t_scanner *sc, t_cmd *cmd)
+{
+	t_list			*cur_arg;
+	t_list			*cur_redir;
+	static t_list	*last_arg;
+	static t_list	*last_redir;
+
+	if (sc->token->type == T_WORD)
+	{
+		cur_arg = parse_arg(sc);
+		if (!cur_arg)
 			return (false);
-		ft_lstadd_back(&cmd->redirects, current_redir); // TODO O(n^2)
+		epic_lstadd_back(cur_arg, &last_arg, &cmd->args);
+	}
+	else
+	{
+		cur_redir = parse_redirect(sc);
+		if (!cur_redir)
+			return (false);
+		epic_lstadd_back(cur_redir, &last_redir, &cmd->redirects);
 	}
 	return (true);
 }
