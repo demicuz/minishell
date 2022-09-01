@@ -6,14 +6,11 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 17:31:24 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/31 02:39:15 by psharen          ###   ########.fr       */
+/*   Updated: 2022/09/01 12:28:30 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdbool.h>
 
 #include <libft.h>
 #include <minishell.h>
@@ -59,27 +56,12 @@ void	print_pipeline(t_list *lst)
 
 int	main(int argc, const char *argv[])
 {
-	char	*line;
 	t_state	state;
 
 	state.envp = copy_string_arr(environ);
-
-	// TODO if non-tty, run with get-next-line
-	line = readline(PROMPT);
-	while (line != NULL)
-	{
-		if (strlen(line) > 0)
-			add_history(line);
-
-		t_list *pipeline = parse(line);
-		#ifdef DEBUG_PIPELINE
-		print_pipeline(pipeline);
-		#endif
-		exec_pipeline(pipeline, &state);
-
-		free(line);
-		ft_lstclear(&pipeline, free_cmd_data);
-		line = readline(PROMPT);
-	}
+	if (isatty(STDIN_FILENO))
+		run_tty(&state);
+	else
+		run_non_tty(&state);
 	exit(EXIT_SUCCESS);
 }

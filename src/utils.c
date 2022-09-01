@@ -6,13 +6,16 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 08:52:25 by psharen           #+#    #+#             */
-/*   Updated: 2022/08/31 02:34:23 by psharen          ###   ########.fr       */
+/*   Updated: 2022/09/01 13:04:49 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include <minishell.h>
 
@@ -30,18 +33,10 @@ bool	in(const char *s, char c)
 	return (false);
 }
 
-// TODO maybe not needed?
-void	*clear_data_and_abort(t_list **lst_to_clear)
-{
-	ft_lstclear(lst_to_clear, free);
-	return (NULL);
-}
-
+// Yes. I need this.
 bool	strequal(const char *s1, const char *s2)
 {
-	if (ft_strcmp(s1, s2) == 0)
-		return (true);
-	return (false);
+	return (ft_strcmp(s1, s2) == 0);
 }
 
 void	free_redirect_data(void *redirect)
@@ -58,7 +53,6 @@ void	free_cmd_data(void *cmd)
 	t_cmd	*c;
 
 	c = cmd;
-	// free(c->name);
 	ft_lstclear(&c->args, free);
 	ft_lstclear(&c->redirects, free_redirect_data);
 	free(c);
@@ -66,36 +60,13 @@ void	free_cmd_data(void *cmd)
 
 // Just trim 'expr' and compare it to "help". Don't want to use ft_strtrim,
 // because it uses malloc.
+// TODO make this a builtin.
 bool	is_help(const char *expr)
 {
 	while (in(SPACE_CHARS, *expr))
 		expr++;
 	return (ft_starts_with("help", expr) && (expr[4] == '\0' ||
 		in(SPACE_CHARS, expr[4])));
-}
-
-// TODO move to executer-related stuff maybe?
-char	**lst_to_string_array(t_list *lst)
-{
-	char	**arr;
-	char	**p;
-
-	arr = malloc(sizeof(*arr) * (ft_lstsize(lst) + 1));
-	// TODO correct error handling, maybe don't exit (if in parent process)?
-	if (!arr)
-	{
-		perror("lst_to_string_array");
-		exit(EXIT_FAILURE);
-	}
-	p = arr;
-	while (lst)
-	{
-		*p = lst->data;
-		lst = lst->next;
-		p++;
-	}
-	*p = NULL;
-	return (arr);
 }
 
 char	*my_getenv(char *envp[], char *var)
@@ -107,6 +78,26 @@ char	*my_getenv(char *envp[], char *var)
 		envp++;
 	}
 	return (NULL);
+}
+
+int	my_open(const char *file, int flags, mode_t mode)
+{
+	int	fd;
+
+	if (mode == 0)
+		fd = open(file, flags);
+	else
+		fd = open(file, flags, mode);
+	if (fd == -1)
+		epic_error(SHELL_NAME, file, strerror(errno));
+	return (fd);
+}
+
+void	my_close(int *fd)
+{
+	if (fd && *fd)
+		close(*fd);
+	*fd = 0;
 }
 
 char	**copy_string_arr(char *arr[])
