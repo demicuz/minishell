@@ -6,7 +6,7 @@
 /*   By: psharen <psharen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/29 14:59:34 by psharen           #+#    #+#             */
-/*   Updated: 2022/09/01 13:04:03 by psharen          ###   ########.fr       */
+/*   Updated: 2022/09/02 13:27:25 by psharen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,10 @@ void	fail(const char *msg);
 void	epic_error(const char *shell, const char *exec_name, const char *msg);
 void	epic_fail(const char *shell, const char *exec_name, const char *msg);
 bool	perror_and_false(const char *exec_name);
-void	*clear_data_and_abort(t_list **lst_to_clear);
+// void	*clear_data_and_abort(t_list **lst_to_clear);
 
 // utils
 bool	in(const char *s, char c);
-t_list	*set_token_type(t_list *lst_token, t_token_type type);
-
 bool	strequal(const char *s1, const char *s2);
 void	free_redirect_data(void *redirect);
 void	free_cmd_data(void *cmd);
