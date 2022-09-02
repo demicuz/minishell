@@ -45,6 +45,7 @@ clean:
 
 fclean: clean
 	rm -vf $(NAME)
+	rm -rvf $(LIB_DIR)
 	$(MAKE) fclean --directory=$(LIBFT_DIR)
 
 re: fclean all
