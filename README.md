@@ -1,5 +1,5 @@
 # minishell
-A project for School 21. Implements a small subset of Bash in C.
+A project for School 21. Implements a small subset of Bash in C. Code style is ugly due to mandatory [Norm](https://github.com/MagicHatJo/-42-Norm/blob/master/norme.en.pdf). Yes, 25 lines per function. Yes, tabs. Yes, only while loops. And so on.
 
 ### Features
 *tbd*
